@@ -6,8 +6,8 @@ Eldar Semnov - 224210122
 """
 from animals import Animal, Predator, Bird, Herbivore
 from visitors import Visitor
-import time_management
 from cells import Cell
+import time_management
 import cowsay
 import time
 from time import sleep
@@ -313,12 +313,16 @@ class Zoo:
     # Bu fonksiyon, tüm ziyaretçileri gösterir.
     def show_all_visitors(self):
         print("Ziyaretçi listesi:")
-        table = PrettyTable(['No', 'Ziyaretçi adı','Ziyaretçi tipi', 'Ziyaretçi yaşı','Tercihler'])
-        for i,visitor in enumerate(self.visitors):
-                table.add_row([i, visitor.name,visitor.visitor_type,visitor.age,visitor.preferences])
-                print(table)   
-        for visitor in self.visitors:
-            print(f"İsim: {visitor.name}, Yaş: {visitor.age}, Tür: {visitor.visitor_type}, Tercihler: {visitor.animal_list}")
+        print("Visitor list:")
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column('No')
+        table.add_column('Visitor Name')
+        table.add_column('Visitor Type')
+        table.add_column('Visitor Age')
+        table.add_column('Preferences')
+        for i, visitor in enumerate(self.visitors):
+            table.add_row(str(i), visitor.name, visitor.visitor_type, str(visitor.age), visitor.preferences)
+        console.print(table)  
 
 console = Console()
 
@@ -326,7 +330,7 @@ def welcome_screen():
       with Progress() as progress:
         task = progress.add_task("[cyan]Yükleniyor...", total=30)
         while not progress.finished:
-            sleep(0.1)
+            sleep(0.01)
             progress.update(task, advance=1)
 
 
@@ -340,13 +344,13 @@ def main_menu(zoo,current_time):
             table = Table(show_header=False, show_lines=True)
             table.add_column()
             table.add_column()
-            table.add_row("[bold green]1.[/bold green] Kafes ekle", "[bold green]8.[/bold green] Kafesden hayvan çıkar")
-            table.add_row("[bold green]2.[/bold green] Kafese hayvan ekle", "[bold green]9.[/bold green] Kafesi kaldır")
-            table.add_row("[bold green]3.[/bold green] Ziyaretçi ekle", "[bold green]10.[/bold green] Ziyaretçiyi kaldır")
-            table.add_row("[bold green]4.[/bold green] Kafesdeki hayvanları listele", "[bold green]11.[/bold green] Hayvanat bahçesindeki tüm hayvanları listele")
-            table.add_row("[bold green]5.[/bold green] Tüm Kafesleri listele", "[bold green]12.[/bold green] Hayvanla etkileşimde bulun")
-            table.add_row("[bold green]6.[/bold green] Ziyaretçi listesini göster", "[bold green]13.[/bold green] Hayvan bilgilerini güncelle")
-            table.add_row("[bold green]7.[/bold green] Yeni bir bölge ekle", "[bold green]14.[/bold green] Hayvanat bahçesinden çık")
+            table.add_row("[bold green]1.[/bold green] Kafes ekle", "[bold green]2.[/bold green] Kafese hayvan ekle")
+            table.add_row("[bold green]3.[/bold green] Ziyaretçi ekle", "[bold green]4.[/bold green] Kafesdeki hayvanları listele")
+            table.add_row("[bold green]5.[/bold green] Tüm Kafesleri listele", "[bold green]6.[/bold green] Kafesden hayvan çıkar")
+            table.add_row("[bold green]7.[/bold green] Kafesi kaldır", "[bold green]8.[/bold green] Ziyaretçiyi kaldır")
+            table.add_row("[bold green]9.[/bold green] Hayvanat bahçesindeki tüm hayvanları listele", "[bold green]10.[/bold green] Hayvanla etkileşimde bulun")
+            table.add_row("[bold green]11.[/bold green] Ziyaretçi listesini göster", "[bold green]12.[/bold green] Hayvan bilgilerini güncelle")
+            table.add_row("[bold green]13.[/bold green] Yeni bir bölge ekle", "[bold green]14.[/bold green] Hayvanat bahçesinden çık")
             console.print(table)
             print("[bold yellow]Seçiminiz: [/bold yellow]", end="")
             choice = input()
