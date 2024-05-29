@@ -1,3 +1,11 @@
+"""
+Ömer Ammura - 234210074
+Emad CheikhElichreh - 224210087
+Mohammad nikpour -  234210005
+Eldar Semnov - 224210122
+"""
+
+
 class Animal:
     def __init__(self, name, species, age, health, gender,abilities=None):
         self.name = name

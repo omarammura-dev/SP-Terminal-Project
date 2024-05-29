@@ -1,20 +1,32 @@
+"""
+Ömer Ammura - 234210074
+Emad CheikhElichreh - 224210087
+Mohammad nikpour -  234210005
+Eldar Semnov - 224210122
+"""
 from animals import Animal, Predator, Bird, Herbivore
 from visitors import Visitor
 import time_management
 from cells import Cell
 import cowsay
 import time
+from time import sleep
+from rich.table import Table
+from rich.console import Console
+from rich import print
+from rich.progress import track,Progress
+from prettytable import PrettyTable
 import random
 
-class Animal:
-    def __init__(self, name, species, age, health, region, gender,ability=None):
-        self.name = name
-        self.species = species
-        self.age = age
-        self.health = health
-        self.region = region
-        self.gender = gender
-        self.abilities = ability
+# class Animal:
+#     def __init__(self, name, species, age, health, region, gender,ability=None):
+#         self.name = name
+#         self.species = species
+#         self.age = age
+#         self.health = health
+#         self.region = region
+#         self.gender = gender
+#         self.abilities = ability
 
 class Zoo:
     def __init__(self):
@@ -270,8 +282,15 @@ class Zoo:
 
     # Bu fonksiyon, bütün kafesleri yazdırı.    
     def printAllCells(self):
-        for i,kafes in enumerate(self.list_all_cells()):
-                print(f"{i+1}. Kafes ID: {kafes}, bulunduğu bölge: {self.cells[kafes].region}")    
+         table = Table(show_header=True, header_style="bold magenta")
+         table.add_column("No", style="dim", width=3)
+         table.add_column("Kafes ID")
+         table.add_column("Bölge")
+
+         for i, kafes in enumerate(self.list_all_cells(), start=1):
+            table.add_row(str(i), str(kafes), self.cells[kafes].region)
+
+         console.print(table)    
 
     # Bu fonksiyon, belirtilen hayvanın bilgilerini günceller.
     def update_animal_info(self, animal_name):
@@ -294,26 +313,43 @@ class Zoo:
     # Bu fonksiyon, tüm ziyaretçileri gösterir.
     def show_all_visitors(self):
         print("Ziyaretçi listesi:")
+        table = PrettyTable(['No', 'Ziyaretçi adı','Ziyaretçi tipi', 'Ziyaretçi yaşı','Tercihler'])
+        for i,visitor in enumerate(self.visitors):
+                table.add_row([i, visitor.name,visitor.visitor_type,visitor.age,visitor.preferences])
+                print(table)   
         for visitor in self.visitors:
             print(f"İsim: {visitor.name}, Yaş: {visitor.age}, Tür: {visitor.visitor_type}, Tercihler: {visitor.animal_list}")
 
+console = Console()
+
+def welcome_screen():
+      with Progress() as progress:
+        task = progress.add_task("[cyan]Yükleniyor...", total=30)
+        while not progress.finished:
+            sleep(0.1)
+            progress.update(task, advance=1)
+
+
+
 # Bu fonksiyon, ana menüyü gösterir ve kullanıcıdan giriş alır.
 def main_menu(zoo,current_time):
-  
         while True:
             cowsay.cow("HAYVANAT BAHÇESİNE HOŞ GELDİNİZ")
-            print(f"Current time: {current_time}\n")
-            print("\nBir işlem seçin:\n")
-            print("1.  Kafes ekle                                6.  Kafesden hayvan çıkar")
-            print("2.  Kafese hayvan ekle                        7.  Kafesi kaldır")
-            print("3.  Ziyaretçi ekle                            8.  Ziyaretçiyi kaldır")
-            print("4.  Kafesdeki hayvanları listele              9.  Hayvanat bahçesindeki tüm hayvanları listele")
-            print("5.  Tüm Kafesleri listele                     10. Hayvanla etkileşimde bulun")
-            print("11. Ziyaretçi listesini göster                12. Hayvan bilgilerini güncelle")
-            print("13. Yeni bir bölge ekle                       13. Hayvanat bahçesinden çık\n")
             
-            choice = input("Seçiminiz: ")
-
+            print("[bold cyan]Saat: [/bold cyan]" + str(current_time))
+            table = Table(show_header=False, show_lines=True)
+            table.add_column()
+            table.add_column()
+            table.add_row("[bold green]1.[/bold green] Kafes ekle", "[bold green]8.[/bold green] Kafesden hayvan çıkar")
+            table.add_row("[bold green]2.[/bold green] Kafese hayvan ekle", "[bold green]9.[/bold green] Kafesi kaldır")
+            table.add_row("[bold green]3.[/bold green] Ziyaretçi ekle", "[bold green]10.[/bold green] Ziyaretçiyi kaldır")
+            table.add_row("[bold green]4.[/bold green] Kafesdeki hayvanları listele", "[bold green]11.[/bold green] Hayvanat bahçesindeki tüm hayvanları listele")
+            table.add_row("[bold green]5.[/bold green] Tüm Kafesleri listele", "[bold green]12.[/bold green] Hayvanla etkileşimde bulun")
+            table.add_row("[bold green]6.[/bold green] Ziyaretçi listesini göster", "[bold green]13.[/bold green] Hayvan bilgilerini güncelle")
+            table.add_row("[bold green]7.[/bold green] Yeni bir bölge ekle", "[bold green]14.[/bold green] Hayvanat bahçesinden çık")
+            console.print(table)
+            print("[bold yellow]Seçiminiz: [/bold yellow]", end="")
+            choice = input()
             if choice == "1":
                 regions = zoo.envs
                 for i in regions:
@@ -434,15 +470,19 @@ def main_menu(zoo,current_time):
                 if len(zoo.visitors) <1:
                     print("Ziyaretçi adedi sıfırdır!!")
                 else:
+                    table = PrettyTable(['No', 'Ziyaretçi adı','Ziyaretçi tipi', 'Ziyaretçi yaşı'])
                     for i,visitor in enumerate(zoo.visitors):
-                        print(f"{i}. {visitor}")
+                        table.add_row([i, visitor.name,visitor.visitor_type,visitor.age])
+                    print(table)    
                     visitor_name = input("Ziyaretçinin ismini girin: ")
                     zoo.remove_visitor(visitor_name)
             elif choice == "9":
                 animals = zoo.list_all_animals_in_zoo()
                 print("Hayvanat bahçesindeki tüm hayvanlar:")
-                for i,animal in enumerate(animals):
-                    print(f"{i+1}. {animal}")
+                table = PrettyTable(['No', 'Animal'])
+                for i, animal in enumerate(animals, start=1):
+                    table.add_row([i, animal])
+                print(table)
             elif choice == "10":
                 animals = {animal.name: animal for animal in zoo.get_all_animals_class_in_zoo()}
                 for animal_name in animals.keys():
@@ -457,6 +497,11 @@ def main_menu(zoo,current_time):
                         break
                 zoo.handle_different_interactions(animals[animal_name])
             elif choice == "11":
+                if len(zoo.visitors) < 1:
+                    print("Ziyaretçi yoktur !")
+                else:
+                    zoo.show_all_visitors()
+            elif choice == "12":
                 animals = [name.lower() for name in zoo.list_all_animals_in_zoo()]
                 for i,animal in enumerate(zoo.list_all_animals_in_zoo()):
                     print(f"{i+1}. {animal}")
@@ -469,11 +514,6 @@ def main_menu(zoo,current_time):
                     else:
                         break
                 zoo.update_animal_info(animal_name.title())
-            elif choice == "12":
-                if len(zoo.visitors) < 1:
-                    print("Ziyaretçi yoktur !")
-                else:
-                    zoo.show_all_visitors()
             elif choice == "13":
                 while True:
                     region_name = input("Bölgenin adını giriniz").lower()
@@ -493,6 +533,8 @@ def main_menu(zoo,current_time):
         
 def main():
     zoo = Zoo()
+    print("[bold cyan]Uygulama başlatılıyor...[/bold cyan]")
+    welcome_screen()
     start_time = time.time()
     time_management_instance = time_management.TimeManagement()
     current_time = time_management_instance.generate_random_clock()
